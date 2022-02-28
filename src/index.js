@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import Gallery from "react-photo-gallery";
 import photos from "./photos";
@@ -6,14 +6,12 @@ import './index.css';
 
 class Title extends React.Component {
   render() {
-    return <h1>Travel Photos</h1>
+    return <h1>Some Travel Photos</h1>
   }
 }
 
 class LocationFilter extends React.Component {
-
   render() {
-
     let options = [
       {
         label: "All",
@@ -60,9 +58,9 @@ class LocationFilter extends React.Component {
         value: "florida",
       },
     ];
-
     return <div className="filterDiv">
-      <label htmlFor="locationFilter">Location: </label>
+      <label htmlFor="locationFilter">Location</label>
+      <br/>
       <select name="locations" id="locationFilter" className="selectFilter" onChange={this.props.onChange}>
         {options.map((option) => (
           <option value={option.value}>{option.label}</option>
@@ -73,9 +71,7 @@ class LocationFilter extends React.Component {
 }
 
 class YearFilter extends React.Component {
-
   render() {
-
     let options = [
       {
         label: "All",
@@ -102,9 +98,9 @@ class YearFilter extends React.Component {
         value: "2021",
       },
     ];
-
     return <div className="filterDiv">
-      <label htmlFor="yearFilter">Year: </label>
+      <label htmlFor="yearFilter">Year</label>
+      <br/>
       <select name="years" id="yearFilter" className="selectFilter" onChange={this.props.onChange}>
         {options.map((option) => (
           <option value={option.value}>{option.label}</option>
@@ -115,15 +111,13 @@ class YearFilter extends React.Component {
 }
 
 class App extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       photos_to_render: photos
     }
   }
-
-  filterByLocation (value) {
+  filterByLocation(value) {
     let filtered_location = value;
     if (filtered_location != "all") {
       let filtered_photos = photos.filter(photo => photo.location == filtered_location);
@@ -136,13 +130,10 @@ class App extends React.Component {
       });
     }
   }
-
-  filterByYear (value) {
+  filterByYear(value) {
     let filtered_year = value;
-    console.log(filtered_year);
     if (filtered_year != "all") {
       let filtered_photos = photos.filter(photo => photo.year == filtered_year);
-      console.log(filtered_photos)
       this.setState({
         photos_to_render: filtered_photos
       });
@@ -152,13 +143,14 @@ class App extends React.Component {
       });
     }
   }
-
   render() {
     return (
       <div>
+        <div id="filterContainer">
         <Title />
-        <LocationFilter onChange={() => this.filterByLocation(document.getElementById('locationFilter').value)}/>
-        <YearFilter onChange={() => this.filterByYear(document.getElementById('yearFilter').value)}/>
+          <LocationFilter onChange={() => this.filterByLocation(document.getElementById('locationFilter').value)} />
+          <YearFilter onChange={() => this.filterByYear(document.getElementById('yearFilter').value)} />
+        </div>
         <Gallery photos={this.state.photos_to_render} direction={"column"} />
       </div>
     )
