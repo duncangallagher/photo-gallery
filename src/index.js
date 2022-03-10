@@ -4,6 +4,10 @@ import Gallery from "react-photo-gallery";
 import photos from "./photos";
 import './index.css';
 
+const all_photos = photos.filter(function (photo) {
+  return photo.src != "/photos/empty.png";
+});
+
 class Title extends React.Component {
   render() {
     return <h1>Some Travel Photos</h1>
@@ -60,7 +64,7 @@ class LocationFilter extends React.Component {
     ];
     return <div className="filterDiv">
       <label htmlFor="locationFilter">Location</label>
-      <br/>
+      <br />
       <select name="locations" id="locationFilter" className="selectFilter" onChange={this.props.onChange}>
         {options.map((option) => (
           <option value={option.value}>{option.label}</option>
@@ -100,7 +104,7 @@ class YearFilter extends React.Component {
     ];
     return <div className="filterDiv">
       <label htmlFor="yearFilter">Year</label>
-      <br/>
+      <br />
       <select name="years" id="yearFilter" className="selectFilter" onChange={this.props.onChange}>
         {options.map((option) => (
           <option value={option.value}>{option.label}</option>
@@ -114,44 +118,50 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      photos_to_render: photos
+      rendered_photos: all_photos,
     }
   }
-  filterByLocation(value) {
-    let filtered_location = value;
-    if (filtered_location != "all") {
-      let filtered_photos = photos.filter(photo => photo.location == filtered_location);
-      this.setState({
-        photos_to_render: filtered_photos
-      });
-    } else {
-      this.setState({
-        photos_to_render: photos
+
+  filterPhotos(location, year) {
+    var filtered_photos;
+    if (location == "all" && year != "all") {
+      filtered_photos = all_photos.filter(function (photo) {
+        return photo.year == year;
       });
     }
-  }
-  filterByYear(value) {
-    let filtered_year = value;
-    if (filtered_year != "all") {
-      let filtered_photos = photos.filter(photo => photo.year == filtered_year);
-      this.setState({
-        photos_to_render: filtered_photos
-      });
-    } else {
-      this.setState({
-        photos_to_render: photos
+    if (location != "all" && year == "all") {
+      filtered_photos = all_photos.filter(function (photo) {
+        return photo.location == location;
       });
     }
+    if (location != "all" && year != "all") {
+      filtered_photos = all_photos.filter(function (photo) {
+        return photo.location == location && photo.year == year;
+      });
+    }
+    if (location == "all" && year == "all") {
+      filtered_photos = all_photos;
+    }
+    if (filtered_photos.length == 0) {
+      filtered_photos = photos.filter(function (photo) {
+        return photo.src == "/photos/empty.png";
+      });
+    }
+    console.log(filtered_photos);
+    this.setState({
+      rendered_photos: filtered_photos,
+    });
   }
+
   render() {
     return (
       <div>
         <div id="filterContainer">
-        <Title />
-          <LocationFilter onChange={() => this.filterByLocation(document.getElementById('locationFilter').value)} />
-          <YearFilter onChange={() => this.filterByYear(document.getElementById('yearFilter').value)} />
+          <Title />
+          <LocationFilter onChange={() => this.filterPhotos(document.getElementById('locationFilter').value, document.getElementById('yearFilter').value)} />
+          <YearFilter onChange={() => this.filterPhotos(document.getElementById('locationFilter').value, document.getElementById('yearFilter').value)} />
         </div>
-        <Gallery photos={this.state.photos_to_render} direction={"column"} />
+        <Gallery photos={this.state.rendered_photos} direction={"column"} />
       </div>
     )
   }

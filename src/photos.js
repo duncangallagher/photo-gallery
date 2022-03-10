@@ -315,6 +315,13 @@ const photos = [
     location: "florida",
     "year": "2019"
   },
+  {
+    src: "/photos/empty.png",
+    width: 5,
+    height: 2,
+    location: "",
+    "year": ""
+  }
 ];
 
 export default photos;
